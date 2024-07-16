@@ -1,22 +1,23 @@
-// Handle connection logic to MongoDB
-
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-mongoose.Promise = global.Promise; // Use JS promise instead of Bluebird
+// Load environment variables from .env file
+dotenv.config();
 
-mongoose.connect('mongodb+srv://tusharmahajan080:Qw9yXrSyPQKn8mYG@clustertaskmanager.etioxbt.mongodb.net/', {
+mongoose.Promise = global.Promise;
+
+const uri = process.env.MONGODB_URI;
+
+mongoose.connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true // Add this line
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 50000,  // Adjust timeout as needed
+    socketTimeoutMS: 45000,  // Adjust timeout as needed
 }).then(() => {
     console.log("Connected to MongoDB successfully");
 }).catch((e) => {
-    console.log("Error while connecting");
-    console.log(e);
+    console.error("Error while connecting to MongoDB", e);
 });
-
-// Deprecation warnings
-// mongoose.set('useCreateIndex', true); // Remove this line
-// mongoose.set('useFindAndModify', false);
 
 module.exports = {
     mongoose
